@@ -1,0 +1,139 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111"><title>ŞENER Cep Telefonu Tamir Merkezi</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;color:#171717}
+.wrap{max-width:850px;margin:auto;padding:14px}.hero{background:#111;color:#fff;border-radius:24px;padding:22px}
+.logo{font-size:32px;font-weight:900;letter-spacing:2px}.sub{color:#e21b23;font-size:12px;font-weight:900;letter-spacing:1px}
+.search{display:flex;gap:8px;margin-top:18px}.search input{flex:1;padding:15px;border:0;border-radius:13px;font-size:16px;outline:none}
+button{border:0;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer}.red{background:#e21b23;color:white}.dark{background:#111;color:#fff}.gray{background:#eee;color:#111}
+.top-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.top-actions button{min-height:52px;font-size:14px}
+.trust-strip{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid #333;white-space:nowrap}
+.trust-strip div{text-align:center;font-size:11px;font-weight:800;color:#fff;line-height:1.35}
+.update-note{text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid #333;color:#fff;font-size:12px;font-weight:700;white-space:nowrap}
+@media(max-width:550px){.update-note{font-size:10px}}
+.categories{display:grid;gap:9px;margin-top:14px}.cat{width:100%;min-height:55px;text-align:left;font-size:15px;border:2px solid transparent}
+.cat:nth-child(odd){background:#e21b23;color:#fff;border-color:#e21b23}.cat:nth-child(even){background:#fff;color:#111;border-color:#e21b23}.cat.active{box-shadow:0 0 0 3px #e21b2333}
+.panel{background:#fff;border-radius:20px;padding:15px;margin-top:14px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card{border:1px solid #e7e7e7;border-radius:15px;padding:14px;margin-top:10px;background:#fff;transition:.18s}.card.clickable{cursor:pointer}.card.clickable:active{transform:scale(.99)}
+.row{display:flex;justify-content:space-between;gap:10px}.model{font-weight:900;font-size:17px}.price{font-weight:900;font-size:19px;white-space:nowrap}.muted{font-size:12px;color:#777}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tag{background:#f0f0f0;border-radius:8px;padding:6px 8px;font-size:12px}
+.stock-ok{background:#e8f7ed;color:#137333}.stock-wait{background:#fff0dc;color:#a85a00}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.actions button{font-size:12px;padding:9px}
+.detail{margin-top:12px;padding-top:12px;border-top:1px solid #eee;display:none}.card.open .detail{display:block}
+.admin-only{display:none}.admin-mode .admin-only{display:block}.admin-toggle{font-size:11px;color:#777;background:transparent;padding:5px}
+.modal{display:none;position:fixed;inset:0;background:#0009;align-items:center;justify-content:center;padding:12px;z-index:20}.modal.show{display:flex}
+.box{background:#fff;border-radius:22px;padding:18px;width:min(600px,100%);max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:#666}
+.field input,.field select,.field textarea{padding:12px;border:1px solid #ddd;border-radius:11px;font:inherit}.field textarea{min-height:85px;resize:vertical}
+.formbuttons{display:flex;gap:8px;margin-top:15px}.formbuttons button{flex:1}.option-row{display:flex;gap:7px;margin-top:8px}.option-row input{flex:1}
+.review-stars{font-size:32px;letter-spacing:3px;cursor:pointer;user-select:none}.review-stars span{color:#ccc}.review-stars span.on{color:#f2b01e}
+.review-item{padding:12px 0;border-bottom:1px solid #eee}.notice{padding:12px;border-radius:12px;background:#f7f7f7;font-size:13px;color:#555}
+@media(max-width:550px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.search{flex-direction:column}.search button{width:100%}.top-actions{grid-template-columns:1fr}.row{align-items:flex-start}.price{font-size:17px}}
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+<div class="hero">
+<div class="logo">ŞENER</div><div class="sub">CEP TELEFONU TAMİR MERKEZİ</div>
+<div class="search"><input id="search" placeholder="Ürün / Model Ara"><button id="new1" class="red admin-only">＋ Yeni Ürün</button></div>
+<div class="top-actions"><button id="dealerTab" class="dark">💵 BAYİ FİYATI</button><button id="customerTab" class="gray">💰 MÜŞTERİ FİYATI</button></div>
+<div class="update-note">Ürünler ve Fiyatlar Anlık Olarak Güncellenmektedir.</div>
+</div>
+<div class="categories">
+<button class="cat" data-cat="Ekranlar" style="background:#fff;color:#111;border-color:#e21b23">📱 EKRANLAR</button>
+<button class="cat" data-cat="Bataryalar">🔋 BATARYALAR</button>
+<button class="cat" data-cat="Kapaklar">📦 KAPAKLAR</button>
+<button class="cat" data-cat="Şarj Bordları">🔌 ŞARJ BORDLARI</button>
+</div>
+<div class="panel"><div class="panel-head"><b id="listTitle">Ürünler</b><button id="new2" class="dark admin-only">＋ Ürün Ekle</button></div><div id="list"></div></div>
+<div class="panel"><button id="reviewOpen" class="red" style="width:100%;min-height:52px">⭐ DEĞERLENDİR</button></div>
+<div class="panel admin-only"><div class="panel-head"><b>Yönetici</b><button id="adminReviews" class="dark">⭐ Yorumları Gör</button></div><div style="margin-top:8px"><button id="adminOptions" class="gray">⚙ Kalite / Tür Yönetimi</button></div></div>
+<div style="text-align:center;margin:12px"><button id="adminToggle" class="admin-toggle">Yönetici modu</button></div>
+</div>
+
+<div id="modal" class="modal"><div class="box">
+<h2 id="title">Yeni Ürün</h2><div class="muted">Ürün bilgilerini ekle veya değiştir.</div>
+<div class="grid">
+<div class="field full"><label>MODEL</label><input id="model" placeholder="Redmi Note 12"></div>
+<div class="field"><label>KATEGORİ</label><select id="category"><option>Ekranlar</option><option>Bataryalar</option><option>Kapaklar</option><option>Şarj Bordları</option><option>Diğer Ürünler</option></select></div>
+<div class="field"><label>ÜRÜN / AÇIKLAMA</label><input id="product" value="Ekran"></div>
+<div class="field"><label>KALİTE</label><select id="quality"></select></div>
+<div class="field"><label>ÜRÜN TÜRÜ</label><select id="type"></select></div>
+<div class="field"><label>BAYİ FİYATI ($)</label><input id="dealer" inputmode="decimal"></div>
+<div class="field"><label>MÜŞTERİ FİYATI (₺)</label><input id="customer" inputmode="decimal"></div>
+<div class="field"><label>STOK ADEDİ (YÖNETİCİ)</label><input id="stock" type="number" min="0" value="0"></div>
+<div class="field"><label>STOK DURUMU</label><select id="stockStatus"><option value="VAR">🟢 VAR</option><option value="KARGO">🟠 KARGO BEKLENİYOR</option></select></div>
+</div>
+<div class="formbuttons"><button id="cancel" class="gray">Vazgeç</button><button id="save" class="red">Kaydet</button></div>
+</div></div>
+
+<div id="reviewModal" class="modal"><div class="box"><h2>⭐ Değerlendir</h2><div class="muted">Ürün deneyiminizi değerlendirin.</div>
+<div class="review-stars" id="stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+<div class="field"><label>KISA YORUM (İSTEĞE BAĞLI)</label><textarea id="reviewText" placeholder="Ürün hızlı geldi..."></textarea></div>
+<div class="formbuttons"><button id="reviewCancel" class="gray">Vazgeç</button><button id="reviewSave" class="red">Gönder</button></div>
+</div></div>
+
+<div id="infoModal" class="modal"><div class="box"><h2 id="infoTitle">Bilgi</h2><div id="infoBody"></div><div class="formbuttons"><button id="infoClose" class="dark">Kapat</button></div></div></div>
+
+<script>
+const seed=[{"model": "Redmi Note 8", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 9", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 10 / 10S", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 11", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 12", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi 12C / Poco C55", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi 13C", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 14 4G", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}];
+let db=JSON.parse(localStorage.getItem("sener_v1")||"null")||seed;
+let mode="dealer",edit=-1,category="all",admin=false,selectedRating=0;
+const DEFAULT_QUALITIES=["OLED","Orijinal","TFT","Mekanik","Senku","Piyasa"];
+const DEFAULT_TYPES=["Mekanik","Senku","Piyasa"];
+let settings=JSON.parse(localStorage.getItem("sener_settings_v1")||"null")||{qualities:DEFAULT_QUALITIES,types:DEFAULT_TYPES};
+let reviews=JSON.parse(localStorage.getItem("sener_reviews_v1")||"[]");
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=x=>String(x??"").toLocaleLowerCase("tr-TR");
+function saveDB(){localStorage.setItem("sener_v1",JSON.stringify(db))}
+function saveSettings(){localStorage.setItem("sener_settings_v1",JSON.stringify(settings))}
+function saveReviews(){localStorage.setItem("sener_reviews_v1",JSON.stringify(reviews))}
+function categoryOf(x){if(x.category)return x.category;let p=norm(x.product);if(p.includes("batarya"))return "Bataryalar";if(p.includes("kapak"))return "Kapaklar";if(p.includes("şarj")||p.includes("bord"))return "Şarj Bordları";return "Ekranlar"}
+function statusOf(x){if(x.stockStatus==="KARGO")return "KARGO";if(x.stockStatus==="VAR")return "VAR";return Number(x.stock)>0?"VAR":"KARGO"}
+
+function render(){
+let q=norm($("search").value.trim());
+let list=db.filter(x=>{let hay=[x.model,x.product,x.quality,x.type,x.color,x.category].map(norm).join(" ");return (category==="all"||categoryOf(x)===category)&&(!q||hay.includes(q))});
+$("listTitle").textContent=category==="all"?"Ürünler":category;
+$("list").innerHTML=list.length?list.map(x=>{
+let i=db.indexOf(x),p=mode==="dealer"?"$ "+esc(x.dealer||"—"):"₺ "+esc(x.customer||"—"),st=statusOf(x),stText=st==="VAR"?"🟢 VAR":"🟠 KARGO BEKLENİYOR";
+return `<div class="card clickable" data-card="${i}"><div class="row"><div><div class="model">${esc(x.model)}</div><div class="muted">${esc(x.product||categoryOf(x))}</div></div><div class="price">${p}</div></div>
+<div class="tags"><span class="tag">Kalite: ${esc(x.quality||"—")}</span><span class="tag">Tür: ${esc(x.type||"—")}</span><span class="tag ${st==="VAR"?"stock-ok":"stock-wait"}">${stText}</span></div>
+<div class="detail"><div class="notice"><b>Model:</b> ${esc(x.model)}<br><b>Kalite:</b> ${esc(x.quality||"—")}<br><b>Tür:</b> ${esc(x.type||"—")}${x.color?`<br><b>Renk:</b> ${esc(x.color)}`:""}<br><b>Stok:</b> ${stText}<br><b>Satış Fiyatı:</b> ${p}</div>
+${admin?`<div class="actions"><button class="gray" data-a="minus" data-i="${i}">− Stok</button><button class="dark" data-a="plus" data-i="${i}">＋ Stok</button><button class="gray" data-a="edit" data-i="${i}">✎ Düzenle</button></div>`:""}</div></div>`
+}).join(""):"<p style='text-align:center;color:#888;padding:25px'>Ürün bulunamadı.</p>";
+}
+function fillOptions(){ $("quality").innerHTML='<option value="">Seç</option>'+settings.qualities.map(x=>`<option>${esc(x)}</option>`).join("");$("type").innerHTML='<option value="">Seç</option>'+settings.types.map(x=>`<option>${esc(x)}</option>`).join("")}
+function openForm(i=-1){
+if(!admin){alert("Bu işlem yalnızca yönetici modunda kullanılabilir.");return} edit=i;
+let x=i<0?{model:"",product:"Ekran",quality:"",dealer:"",customer:"",stock:0,type:"",category:"Ekranlar",stockStatus:"KARGO"}:db[i];
+$("title").textContent=i<0?"Yeni Ürün":"Ürünü Düzenle";$("model").value=x.model||"";$("product").value=x.product||"Ekran";$("quality").value=x.quality||"";$("type").value=x.type||"";$("dealer").value=x.dealer||"";$("customer").value=x.customer||"";$("stock").value=x.stock||0;$("category").value=categoryOf(x);$("stockStatus").value=statusOf(x);$("modal").classList.add("show")
+}
+function closeForm(){$("modal").classList.remove("show");edit=-1}
+function setMode(m){mode=m;$("dealerTab").className=m==="dealer"?"dark":"gray";$("customerTab").className=m==="customer"?"dark":"gray";render()}
+$("new1").onclick=()=>openForm();$("new2").onclick=()=>openForm();$("cancel").onclick=closeForm;$("dealerTab").onclick=()=>setMode("dealer");$("customerTab").onclick=()=>setMode("customer");$("search").oninput=render;
+document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>{category=b.dataset.cat;document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()});
+$("modal").onclick=e=>{if(e.target===$("modal"))closeForm()};
+$("save").onclick=()=>{let model=$("model").value.trim();if(!model){alert("Model adını yazmalısın.");return}let x={model,product:$("product").value.trim()||"Ekran",category:$("category").value,quality:$("quality").value,type:$("type").value,dealer:$("dealer").value.trim(),customer:$("customer").value.trim(),stock:Math.max(0,Number($("stock").value)||0),stockStatus:$("stockStatus").value};if(edit<0)db.unshift(x);else db[edit]=x;saveDB();closeForm();render()};
+$("list").onclick=e=>{let card=e.target.closest(".card");if(!card)return;let b=e.target.closest("button[data-a]");if(b){let i=+b.dataset.i,a=b.dataset.a;if(a==="edit")openForm(i);if(a==="plus")db[i].stock=(+db[i].stock||0)+1;if(a==="minus")db[i].stock=Math.max(0,(+db[i].stock||0)-1);if(a!=="edit"){db[i].stockStatus=db[i].stock>0?"VAR":db[i].stockStatus;saveDB();render()}return}card.classList.toggle("open")};
+$("reviewOpen").onclick=()=>{$("reviewModal").classList.add("show");selectedRating=0;updateStars();$("reviewText").value=""};$("reviewCancel").onclick=()=>$("reviewModal").classList.remove("show");
+$("stars").onclick=e=>{let s=e.target.closest("span");if(!s)return;selectedRating=+s.dataset.v;updateStars()};function updateStars(){document.querySelectorAll("#stars span").forEach(s=>s.classList.toggle("on",+s.dataset.v<=selectedRating))}
+$("reviewSave").onclick=()=>{if(!selectedRating){alert("Lütfen yıldız seç.");return}reviews.unshift({rating:selectedRating,text:$("reviewText").value.trim(),date:new Date().toLocaleString("tr-TR")});saveReviews();$("reviewModal").classList.remove("show");alert("Değerlendirmeniz kaydedildi. Teşekkür ederiz!")};
+$("adminToggle").onclick=()=>{admin=!admin;$("app").classList.toggle("admin-mode",admin);$("adminToggle").textContent=admin?"Yönetici modunu kapat":"Yönetici modu";render()};
+$("adminReviews").onclick=()=>{$("infoTitle").textContent="⭐ Değerlendirmeler";$("infoBody").innerHTML=reviews.length?reviews.map(r=>`<div class="review-item"><div>${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</div><div>${esc(r.text||"Yorum yok")}</div><div class="muted">${esc(r.date)}</div></div>`).join(""):"<div class='notice'>Henüz değerlendirme yok.</div>";$("infoModal").classList.add("show")};
+$("adminOptions").onclick=()=>{
+let q=settings.qualities.map(x=>`<div class="option-row"><input value="${esc(x)}" data-q><button class="gray" data-del-q="${esc(x)}">Sil</button></div>`).join("");
+let t=settings.types.map(x=>`<div class="option-row"><input value="${esc(x)}" data-t><button class="gray" data-del-t="${esc(x)}">Sil</button></div>`).join("");
+$("infoTitle").textContent="⚙ Kalite / Tür Yönetimi";$("infoBody").innerHTML=`<h3>Kaliteler</h3>${q}<div class="option-row"><input id="newQuality" placeholder="Yeni Kalite"><button class="red" id="addQuality">＋ Ekle</button></div><h3 style="margin-top:20px">Türler</h3>${t}<div class="option-row"><input id="newType" placeholder="Yeni Tür"><button class="red" id="addType">＋ Ekle</button></div>`;$("infoModal").classList.add("show");
+$("addQuality").onclick=()=>{let v=$("newQuality").value.trim();if(v&&!settings.qualities.includes(v))settings.qualities.push(v);saveSettings();fillOptions();$("adminOptions").click()};
+$("addType").onclick=()=>{let v=$("newType").value.trim();if(v&&!settings.types.includes(v))settings.types.push(v);saveSettings();fillOptions();$("adminOptions").click()};
+document.querySelectorAll("[data-del-q]").forEach(b=>b.onclick=()=>{settings.qualities=settings.qualities.filter(x=>x!==b.dataset.delQ);saveSettings();fillOptions();$("adminOptions").click()});
+document.querySelectorAll("[data-del-t]").forEach(b=>b.onclick=()=>{settings.types=settings.types.filter(x=>x!==b.dataset.delT);saveSettings();fillOptions();$("adminOptions").click()});
+};
+$("infoClose").onclick=()=>$("infoModal").classList.remove("show");$("infoModal").onclick=e=>{if(e.target===$("infoModal"))$("infoModal").classList.remove("show")};
+fillOptions();setMode("dealer");
+</script>
+</body></html>
