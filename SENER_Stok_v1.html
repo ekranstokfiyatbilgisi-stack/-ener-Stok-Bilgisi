@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111"><title>ŞENER Cep Telefonu Tamir Merkezi</title>
+<style>
+body{margin:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;color:#171717}
+.wrap{max-width:850px;margin:auto;padding:14px}.hero{background:#111;color:#fff;border-radius:24px;padding:22px}
+.logo{font-size:32px;font-weight:900;letter-spacing:2px}.sub{color:#e21b23;font-size:12px;font-weight:900;letter-spacing:1px}
+.search{display:flex;gap:8px;margin-top:18px}.search input{flex:1;padding:14px;border:0;border-radius:13px;font-size:16px}
+button{border:0;border-radius:12px;padding:12px 14px;font-weight:800}.red{background:#e21b23;color:white}.dark{background:#111;color:#fff}.gray{background:#eee}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.tabs button{background:#292929;color:#aaa}.tabs .on{background:white;color:#111}
+.panel{background:#fff;border-radius:20px;padding:15px;margin-top:14px}.card{border:1px solid #e7e7e7;border-radius:15px;padding:14px;margin-top:10px}
+.row{display:flex;justify-content:space-between;gap:10px}.model{font-weight:900;font-size:17px}.price{font-weight:900;font-size:19px}.muted{font-size:12px;color:#777}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tag{background:#f0f0f0;border-radius:8px;padding:6px 8px;font-size:12px}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.actions button{font-size:12px;padding:9px}
+.modal{display:none;position:fixed;inset:0;background:#0009;align-items:center;justify-content:center;padding:12px}.modal.show{display:flex}
+.box{background:#fff;border-radius:22px;padding:18px;width:min(600px,100%);max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:#666}.field input,.field select{padding:12px;border:1px solid #ddd;border-radius:11px;font:inherit}.formbuttons{display:flex;gap:8px;margin-top:15px}.formbuttons button{flex:1}
+@media(max-width:550px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="hero">
+<div class="logo">ŞENER</div><div class="sub">CEP TELEFONU TAMİR MERKEZİ</div>
+<div class="search"><input id="search" placeholder="Model Ara"><button id="new1" class="red">＋ Yeni Ürün</button></div>
+<div class="tabs"><button id="dealerTab" class="on">BAYİ FİYATI ($)</button><button id="customerTab">MÜŞTERİ FİYATI (₺)</button></div>
+</div>
+<div class="panel">
+<div style="display:flex;justify-content:space-between;align-items:center"><b>Stok Listesi</b><button id="new2" class="dark">＋ Ürün Ekle</button></div>
+<div id="list"></div>
+</div>
+</div>
+<div id="modal" class="modal">
+<div class="box">
+<h2 id="title">Yeni Ürün</h2><div class="muted">Ürün bilgilerini ekle veya değiştir.</div>
+<div class="grid">
+<div class="field full"><label>MODEL</label><input id="model" placeholder="Redmi Note 12"></div>
+<div class="field"><label>ÜRÜN</label><input id="product" value="Ekran"></div>
+<div class="field"><label>KALİTE</label><select id="quality"><option value="">Seç</option><option>OLED</option><option>AMOLED</option><option>TFT</option><option>ORİJİNAL</option><option>Servis</option></select></div>
+<div class="field"><label>BAYİ FİYATI ($)</label><input id="dealer" inputmode="decimal"></div>
+<div class="field"><label>MÜŞTERİ FİYATI (₺)</label><input id="customer" inputmode="decimal"></div>
+<div class="field"><label>STOK</label><input id="stock" type="number" min="0" value="0"></div>
+<div class="field"><label>ÜRÜN TİPİ</label><select id="type"><option value="">Seç</option><option>Çitalı</option><option>Boş</option><option>Servis</option></select></div>
+</div>
+<div class="formbuttons"><button id="cancel" class="gray">Vazgeç</button><button id="save" class="red">Kaydet</button></div>
+</div>
+</div>
+<script>
+const seed=[{"model": "Redmi Note 8", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 9", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 10 / 10S", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 11", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 12", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi 12C / Poco C55", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi 13C", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 14 4G", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}];
+let db=JSON.parse(localStorage.getItem("sener_v1")||"null")||seed;
+let mode="dealer", edit=-1;
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+function saveDB(){localStorage.setItem("sener_v1",JSON.stringify(db))}
+function render(){
+ let q=$("search").value.trim().toLocaleLowerCase("tr-TR");
+ let a=db.filter(x=>x.model.toLocaleLowerCase("tr-TR").includes(q));
+ $("list").innerHTML=a.length?a.map(x=>{
+  let i=db.indexOf(x);
+  let p=mode==="dealer"?"$ "+esc(x.dealer||"—"):"₺ "+esc(x.customer||"—");
+  return `<div class="card"><div class="row"><div><div class="model">${esc(x.model)}</div><div class="muted">${esc(x.product||"Ekran")}</div></div><div class="price">${p}</div></div>
+  <div class="tags"><span class="tag">Kalite: ${esc(x.quality||"—")}</span><span class="tag">Stok: ${Number(x.stock)||0}</span><span class="tag">${esc(x.type||"—")}</span></div>
+  <div class="actions"><button class="gray" data-a="minus" data-i="${i}">− Stok</button><button class="dark" data-a="plus" data-i="${i}">＋ Stok</button><button class="gray" data-a="edit" data-i="${i}">✎ Bilgileri Düzenle</button></div></div>`;
+ }).join(""):"<p style='text-align:center;color:#888;padding:25px'>Ürün bulunamadı.</p>";
+}
+function openForm(i=-1){
+ edit=i; let x=i<0?{model:"",product:"Ekran",quality:"",dealer:"",customer:"",stock:0,type:""}:db[i];
+ $("title").textContent=i<0?"Yeni Ürün":"Ürünü Düzenle";
+ $("model").value=x.model||"";$("product").value=x.product||"Ekran";$("quality").value=x.quality||"";
+ $("dealer").value=x.dealer||"";$("customer").value=x.customer||"";$("stock").value=x.stock||0;$("type").value=x.type||"";
+ $("modal").classList.add("show");
+}
+function closeForm(){$("modal").classList.remove("show");edit=-1}
+$("new1").onclick=()=>openForm();$("new2").onclick=()=>openForm();$("cancel").onclick=closeForm;
+$("modal").onclick=e=>{if(e.target===$("modal"))closeForm()};
+$("save").onclick=()=>{
+ let model=$("model").value.trim(); if(!model){alert("Model adını yazmalısın.");return}
+ let x={model,product:$("product").value.trim()||"Ekran",quality:$("quality").value,dealer:$("dealer").value.trim(),customer:$("customer").value.trim(),stock:Math.max(0,Number($("stock").value)||0),type:$("type").value};
+ if(edit<0)db.unshift(x);else db[edit]=x;saveDB();closeForm();render();
+};
+$("dealerTab").onclick=()=>{mode="dealer";$("dealerTab").classList.add("on");$("customerTab").classList.remove("on");render()};
+$("customerTab").onclick=()=>{mode="customer";$("customerTab").classList.add("on");$("dealerTab").classList.remove("on");render()};
+$("search").oninput=render;
+$("list").onclick=e=>{let b=e.target.closest("button[data-a]");if(!b)return;let i=+b.dataset.i,a=b.dataset.a;if(a==="edit")openForm(i);if(a==="plus")db[i].stock=(+db[i].stock||0)+1;if(a==="minus")db[i].stock=Math.max(0,(+db[i].stock||0)-1);if(a!=="edit"){saveDB();render()}};
+render();
+</script></body></html>
