@@ -505,4 +505,322 @@ supabaseClient?.auth.onAuthStateChange(()=>{setTimeout(()=>applyAuthState(),0)})
 ensureDefaultOptions();fillOptions();setMode("dealer");applyAuthState();
 </script>
 
-</body></html>
+</body></html><script>
+(function(){
+  if(!window.supabaseClient) return;
+
+  let orderItems = [];
+  let orderName = "";
+
+  function createOrderUI(){
+    if(document.getElementById("newOrderModal")) return;
+
+    const modal=document.createElement("div");
+    modal.id="newOrderModal";
+    modal.className="modal";
+    modal.innerHTML=`
+      <div class="box">
+        <h2>🛵 Yeni Sipariş</h2>
+        <div id="newOrderItems"></div>
+
+        <button id="addOrderItem" class="gray" style="width:100%;margin-top:10px">
+          ＋ Başka Ürün Ekle
+        </button>
+
+        <div class="field full" style="margin-top:12px">
+          <label>İSİM SOYİSİM</label>
+          <input id="orderCustomerName" placeholder="Adınız Soyadınız">
+        </div>
+
+        <div class="formbuttons">
+          <button id="cancelNewOrder" class="gray">Vazgeç</button>
+          <button id="sendNewOrder" class="red">🛵 SİPARİŞİ GÖNDER</button>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(modal);
+
+    document.getElementById("addOrderItem").onclick=addOrderItem;
+    document.getElementById("cancelNewOrder").onclick=closeNewOrder;
+
+    document.getElementById("sendNewOrder").onclick=async()=>{
+      const name=document.getElementById("orderCustomerName").value.trim();
+
+      if(!name){
+        alert("Lütfen isim soyisim yazın.");
+        return;
+      }
+
+      const rows=[...document.querySelectorAll(".new-order-row")];
+      const items=[];
+
+      for(const row of rows){
+        const brand=row.querySelector(".order-brand").value.trim();
+        const model=row.querySelector(".order-model").value.trim();
+        const qty=Math.max(1,Number(row.querySelector(".order-qty").value)||1);
+
+        if(!brand || !model){
+          alert("Marka ve model boş bırakılamaz.");
+          return;
+        }
+
+        items.push({
+          brand:brand,
+          model:model,
+          quantity:qty
+        });
+      }
+
+      if(!items.length){
+        alert("En az bir ürün ekleyin.");
+        return;
+      }
+
+      const {error}=await supabaseClient
+        .from("orders")
+        .insert({
+          customer_name:name,
+          items:items,
+          status:"Bekliyor"
+        });
+
+      if(error){
+        console.error(error);
+        alert("Sipariş gönderilemedi: "+error.message);
+        return;
+      }
+
+      alert("✅ Siparişiniz başarıyla gönderildi.");
+      closeNewOrder();
+    };
+  }
+
+  function addOrderItem(){
+    const container=document.getElementById("newOrderItems");
+
+    const row=document.createElement("div");
+    row.className="new-order-row";
+    row.style.cssText="border:1px solid #ddd;border-radius:14px;padding:12px;margin-top:10px";
+
+    row.innerHTML=`
+      <div class="field">
+        <label>MARKA</label>
+        <input class="order-brand" placeholder="Samsung">
+      </div>
+
+      <div class="field" style="margin-top:8px">
+        <label>MODEL</label>
+        <input class="order-model" placeholder="A52">
+      </div>
+
+      <div class="field" style="margin-top:8px">
+        <label>ADET</label>
+        <input class="order-qty" type="number" min="1" value="1">
+      </div>
+
+      <button class="gray removeOrderItem"
+              style="width:100%;margin-top:8px">
+        🗑 Ürünü Kaldır
+      </button>
+    `;
+
+    row.querySelector(".removeOrderItem").onclick=()=>{
+      row.remove();
+    };
+
+    container.appendChild(row);
+  }
+
+  function openNewOrder(){
+    createOrderUI();
+
+    orderItems=[];
+    document.getElementById("newOrderItems").innerHTML="";
+    document.getElementById("orderCustomerName").value="";
+
+    addOrderItem();
+
+    document.getElementById("newOrderModal").classList.add("show");
+  }
+
+  function closeNewOrder(){
+    const m=document.getElementById("newOrderModal");
+    if(m) m.classList.remove("show");
+  }
+
+  /*
+   * Mevcut "Sipariş Ver" butonlarını yeni sisteme bağla.
+   */
+  document.addEventListener("click",function(e){
+    const btn=e.target.closest(".order-product-btn");
+    if(!btn) return;
+
+    e.preventDefault();
+    e.stopPropagation();
+    openNewOrder();
+  },true);
+
+
+  /*
+   * YÖNETİCİ SİPARİŞLERİ
+   */
+  function createAdminOrdersButton(){
+    if(document.getElementById("adminOrdersButton")) return;
+
+    const panel=document.querySelector(".admin-actions");
+    if(!panel) return;
+
+    const btn=document.createElement("button");
+    btn.id="adminOrdersButton";
+    btn.className="red";
+    btn.innerHTML="🛵 Siparişler";
+    btn.onclick=openAdminOrders;
+
+    panel.appendChild(btn);
+  }
+
+  async function openAdminOrders(){
+    let modal=document.getElementById("adminOrdersModal");
+
+    if(!modal){
+      modal=document.createElement("div");
+      modal.id="adminOrdersModal";
+      modal.className="modal";
+
+      modal.innerHTML=`
+        <div class="box">
+          <div class="panel-head">
+            <h2>🛵 Siparişler</h2>
+            <button id="closeAdminOrders" class="gray">Kapat</button>
+          </div>
+
+          <div id="adminOrdersList">
+            Yükleniyor...
+          </div>
+        </div>
+      `;
+
+      document.body.appendChild(modal);
+
+      document.getElementById("closeAdminOrders").onclick=()=>{
+        modal.classList.remove("show");
+      };
+    }
+
+    modal.classList.add("show");
+    await loadAdminOrders();
+  }
+
+  async function loadAdminOrders(){
+    const box=document.getElementById("adminOrdersList");
+
+    const {data,error}=await supabaseClient
+      .from("orders")
+      .select("*")
+      .order("created_at",{ascending:false});
+
+    if(error){
+      box.innerHTML=
+        `<div class="notice">Siparişler alınamadı: ${escapeHtml(error.message)}</div>`;
+      return;
+    }
+
+    if(!data || !data.length){
+      box.innerHTML=
+        `<div class="notice">Henüz sipariş yok.</div>`;
+      return;
+    }
+
+    box.innerHTML=data.map(order=>{
+      const items=Array.isArray(order.items)?order.items:[];
+
+      return `
+        <div class="card" style="border-left:5px solid #e21b23">
+          <div style="font-size:17px;font-weight:900">
+            👤 ${escapeHtml(order.customer_name)}
+          </div>
+
+          <div class="muted" style="margin-top:5px">
+            🕐 ${new Date(order.created_at).toLocaleString("tr-TR")}
+          </div>
+
+          <div style="margin-top:12px">
+            ${items.map(item=>`
+              <div style="padding:9px;background:#f7f7f7;border-radius:10px;margin-top:6px">
+                <b>${escapeHtml(item.brand)}</b>
+                — ${escapeHtml(item.model)}
+                — <b>${Number(item.quantity)||1} adet</b>
+              </div>
+            `).join("")}
+          </div>
+
+          <div style="margin-top:12px">
+            <select class="order-status-select"
+                    data-order-id="${order.id}"
+                    style="width:100%;padding:11px;border:1px solid #ddd;border-radius:10px">
+              ${["Bekliyor","Onaylandı","Hazırlanıyor","Kargoda","Tamamlandı","İptal"]
+                .map(s=>`<option ${order.status===s?"selected":""}>${s}</option>`).join("")}
+            </select>
+          </div>
+        </div>
+      `;
+    }).join("");
+
+    document.querySelectorAll(".order-status-select").forEach(select=>{
+      select.onchange=async()=>{
+        const id=select.dataset.orderId;
+        const status=select.value;
+
+        const {error}=await supabaseClient
+          .from("orders")
+          .update({status:status})
+          .eq("id",id);
+
+        if(error){
+          alert("Sipariş durumu değiştirilemedi.");
+        }
+      };
+    });
+  }
+
+  function escapeHtml(value){
+    return String(value??"")
+      .replaceAll("&","&amp;")
+      .replaceAll("<","&lt;")
+      .replaceAll(">","&gt;")
+      .replaceAll('"',"&quot;")
+      .replaceAll("'","&#039;");
+  }
+
+  /*
+   * Yeni sipariş geldiğinde yönetici ekranını otomatik yenile.
+   */
+  supabaseClient
+    .channel("orders-live")
+    .on(
+      "postgres_changes",
+      {
+        event:"INSERT",
+        schema:"public",
+        table:"orders"
+      },
+      payload=>{
+        if(window.admin){
+          alert("🔔 YENİ SİPARİŞ GELDİ!");
+
+          const modal=document.getElementById("adminOrdersModal");
+          if(modal && modal.classList.contains("show")){
+            loadAdminOrders();
+          }
+        }
+      }
+    )
+    .subscribe();
+
+  setTimeout(()=>{
+    createOrderUI();
+    createAdminOrdersButton();
+  },1000);
+
+})();
+</script>
