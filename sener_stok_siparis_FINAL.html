@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#111"><title>ŞENER Cep Telefonu Tamir Merkezi</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f4f5f7;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Arial;color:#171717}
+.wrap{max-width:850px;margin:auto;padding:14px}.hero{background:#111;color:#fff;border-radius:24px;padding:22px}
+.logo{font-size:32px;font-weight:900;letter-spacing:2px}.sub{color:#e21b23;font-size:12px;font-weight:900;letter-spacing:1px}
+.search{display:flex;gap:8px;margin-top:18px}.search input{flex:1;padding:15px;border:0;border-radius:13px;font-size:16px;outline:none}
+button{border:0;border-radius:12px;padding:12px 14px;font-weight:800;cursor:pointer}.red{background:#e21b23;color:white}.dark{background:#111;color:#fff}.gray{background:#eee;color:#111}
+.top-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.top-actions button{min-height:52px;font-size:14px}
+.admin-actions{display:none;grid-template-columns:1fr 1fr 1fr 1fr;gap:9px;margin-top:12px}.admin-mode .admin-actions{display:grid}.admin-actions button{min-height:52px;font-size:14px}
+.admin-actions .admin-white{background:#fff;color:#111;border:2px solid #e21b23}
+@media(max-width:550px){.admin-actions{grid-template-columns:1fr}.admin-actions button{width:100%}}
+.trust-strip{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:14px;padding-top:12px;border-top:1px solid #333;white-space:nowrap}
+.trust-strip div{text-align:center;font-size:11px;font-weight:800;color:#fff;line-height:1.35}
+.update-note{text-align:center;margin-top:14px;padding-top:12px;border-top:1px solid #333;color:#fff;font-size:12px;font-weight:700;white-space:nowrap}
+@media(max-width:550px){.update-note{font-size:10px}}
+.categories{display:grid;gap:10px;margin-top:14px}.cat{width:100%;min-height:58px;text-align:left;font-size:15px;font-weight:900;border:1px solid #e4e4e4!important;background:#fff!important;color:#171717!important;border-radius:20px;box-shadow:0 7px 20px #00000010;transition:.18s}.cat:active{transform:scale(.985)}.cat.active{background:#f7f7f7!important;color:#111!important;border-color:#e21b23!important;box-shadow:0 0 0 2px #e21b2320,0 9px 24px #00000014}
+.panel{background:#fff;border-radius:20px;padding:15px;margin-top:14px}.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.card{border:1px solid #e7e7e7;border-radius:15px;padding:14px;margin-top:10px;background:#fff;transition:.18s}.card.clickable{cursor:pointer}.card.clickable:active{transform:scale(.99)}
+.row{display:flex;justify-content:space-between;gap:10px}.model{font-weight:900;font-size:17px}.price{font-weight:900;font-size:19px;white-space:nowrap}.muted{font-size:12px;color:#777}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.tag{background:#f0f0f0;border-radius:8px;padding:6px 8px;font-size:12px}
+.stock-ok{background:#e8f7ed;color:#137333}.stock-wait{background:#fff0dc;color:#a85a00}.actions{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.actions button{font-size:12px;padding:9px}
+.detail{display:none;margin-top:16px;padding:0;border:0}.card.open .detail{display:block}
+.detail-card{position:relative;overflow:hidden;background:linear-gradient(135deg,#ffffff 0%,#fffafa 48%,#fff0f1 100%);color:#202020;border-radius:25px;padding:20px;min-height:390px;border:1px solid #efc8cb;box-shadow:0 16px 38px rgba(190,45,55,.14),inset 0 1px 0 #fff}
+.detail-card:before{content:"";position:absolute;top:-85px;right:-65px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,rgba(226,27,35,.17) 0%,rgba(226,27,35,.06) 42%,transparent 70%);pointer-events:none}
+.detail-card:after{content:"";position:absolute;bottom:-90px;left:-80px;width:210px;height:210px;border-radius:50%;background:radial-gradient(circle,rgba(226,27,35,.08) 0%,transparent 70%);pointer-events:none}
+.detail-top{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding-bottom:18px;border-bottom:1px solid #efd8d9}
+.detail-kicker{font-size:10px;font-weight:950;letter-spacing:2px;color:#c9151d;text-transform:uppercase;margin-bottom:7px}
+.detail-model{font-size:29px;line-height:1.05;font-weight:950;color:#191919}
+.detail-product{font-size:14px;color:#766666;margin-top:7px;font-weight:750}
+.detail-status{font-size:10px;font-weight:950;border-radius:999px;padding:9px 11px;white-space:normal;text-align:center;max-width:48%;box-shadow:0 6px 16px rgba(130,30,35,.08)}
+.detail-status.ok{background:#f0fbf3;color:#137333;border:1px solid #c6e7ce}.detail-status.wait{background:#fff8ee;color:#925b16;border:1px solid #efd5aa}.detail-status.ship{background:#fff0f1;color:#a51d25;border:1px solid #edc0c3}.detail-status.order{background:#fff3f4;color:#8d2931;border:1px solid #e5c2c5}
+.detail-grid{position:relative;z-index:1;display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:16px}
+.detail-item{background:rgba(255,255,255,.86);border:1px solid #ead7d8;border-radius:15px;padding:13px;min-height:72px;box-shadow:0 5px 14px rgba(120,35,35,.05)}
+.detail-label{font-size:9px;color:#9a7070;font-weight:950;letter-spacing:1px;text-transform:uppercase}
+.detail-value{font-size:15px;font-weight:900;margin-top:5px;word-break:break-word;color:#292525}
+.detail-price{position:relative;z-index:1;margin-top:16px;background:linear-gradient(135deg,#fff,#fff7f7);color:#111;border-radius:19px;padding:17px;border-left:6px solid #d71920;box-shadow:0 12px 28px rgba(130,25,35,.11)}
+.detail-price-label{font-size:11px;color:#8a6868;font-weight:950;letter-spacing:1.5px}
+.detail-price-value{font-size:37px;line-height:1.05;font-weight:950;margin-top:5px;color:#c9151d}
+.detail-price-note{font-size:10px;color:#8b7777;margin-top:5px;font-weight:700}
+.detail-close-hint{position:relative;z-index:1;text-align:center;color:#a17f7f;font-size:10px;font-weight:800;margin-top:12px}
+.order-product-btn{position:relative;z-index:2;width:100%;margin-top:13px;min-height:48px;border:1px solid #d53b42;border-radius:16px;background:linear-gradient(135deg,#e21b23,#c9151d);color:#fff;font-size:14px;font-weight:950;box-shadow:0 8px 20px rgba(201,21,29,.18);cursor:pointer}.order-product-btn:active{transform:scale(.985)}
+@media(max-width:550px){.detail-card{padding:17px;min-height:370px}.detail-model{font-size:24px}.detail-grid{gap:8px}.detail-item{padding:11px;min-height:66px}.detail-value{font-size:14px}.detail-price-value{font-size:32px}}.admin-only{display:none}.admin-mode .admin-only{display:block}.admin-toggle{font-size:11px;color:#777;background:transparent;padding:8px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent} .modal input{font-size:16px}
+.modal{display:none;position:fixed;inset:0;background:#0009;align-items:center;justify-content:center;padding:12px;z-index:20}.modal.show{display:flex}
+.box{background:#fff;border-radius:22px;padding:18px;width:min(600px,100%);max-height:90vh;overflow:auto}.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:15px}
+.field{display:flex;flex-direction:column;gap:5px}.field.full{grid-column:1/-1}.field label{font-size:11px;font-weight:800;color:#666}
+.field input,.field select,.field textarea{padding:12px;border:1px solid #ddd;border-radius:11px;font:inherit}.field textarea{min-height:85px;resize:vertical}
+.formbuttons{display:flex;gap:8px;margin-top:15px}.formbuttons button{flex:1}.option-row{display:flex;gap:7px;margin-top:8px}.option-row input{flex:1}
+.review-stars{font-size:32px;letter-spacing:3px;cursor:pointer;user-select:none}.review-stars span{color:#ccc}.review-stars span.on{color:#f2b01e}
+.review-item{padding:12px 0;border-bottom:1px solid #eee}.notice{padding:12px;border-radius:12px;background:#f7f7f7;font-size:13px;color:#555}
+@media(max-width:550px){.grid{grid-template-columns:1fr}.field.full{grid-column:auto}.search{flex-direction:column}.search button{width:100%}.top-actions{grid-template-columns:1fr}.row{align-items:flex-start}.price{font-size:17px}}
+
+.order-product-btn{position:relative;z-index:5;pointer-events:auto!important;cursor:pointer!important}
+#orderModal .box{box-shadow:0 18px 45px rgba(0,0,0,.18)}
+#orderProductInfo{background:#fff7f7;border:1px solid #efd0d2;border-radius:14px;padding:12px;color:#4b3838;font-weight:800}
+
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+<div class="hero">
+<div class="logo">ŞENER</div><div style="font-size:9px;color:#777;opacity:.45">Sipariş sistemi vFINAL-1</div><div class="sub">CEP TELEFONU TAMİR MERKEZİ</div>
+<div class="search"><input id="search" placeholder="Ürün / Model Ara"><button id="new1" class="red admin-only">＋ Yeni Ürün</button></div>
+<div class="top-actions"><button id="dealerTab" class="dark">💵 BAYİ FİYATI</button><button id="customerTab" class="gray admin-only">💰 MÜŞTERİ FİYATI</button></div>
+<div class="admin-actions">
+<button id="adminStockAdd" class="red">📦 Stok Ekle</button>
+<button id="adminProductAdd" class="admin-white">＋ Ürün Ekle</button>
+<button id="adminEditFirst" class="red">✎ Düzenle</button>
+<button type="button" id="adminOrders" class="dark">🛵 Siparişler</button>
+</div>
+<div class="update-note">Ürünler ve Fiyatlar Anlık Olarak Güncellenmektedir.</div>
+</div>
+<div class="categories">
+<button class="cat" data-cat="Ekranlar" style="background:#fff;color:#111;border-color:#e21b23">📱 EKRANLAR</button>
+<button class="cat" data-cat="Bataryalar">🔋 BATARYALAR</button>
+<button class="cat" data-cat="Kapaklar">📦 KAPAKLAR</button>
+<button class="cat" data-cat="Şarj Bordları">🔌 ŞARJ BORDLARI</button>
+</div>
+<div class="panel"><div class="panel-head"><b id="listTitle">Ürünler</b><button id="new2" class="dark admin-only">＋ Ürün Ekle</button></div><div id="list"></div></div>
+<div class="panel admin-only" id="ordersPanel" style="display:none"><div class="panel-head"><b>🛵 Siparişler</b><button id="ordersRefresh" class="gray">↻ Yenile</button></div><div id="ordersList" style="margin-top:10px"></div></div>
+<div class="panel"><button id="reviewOpen" class="red" style="width:100%;min-height:52px">⭐ DEĞERLENDİR</button></div>
+<div class="panel admin-only"><div class="panel-head"><b>Yönetici</b><button id="adminReviews" class="dark">⭐ Yorumları Gör</button></div><div style="margin-top:8px"><button id="adminOptions" class="gray">⚙ Kalite / Tür Yönetimi</button></div></div>
+<div style="text-align:center;margin:12px"><button type="button" id="adminToggle" class="admin-toggle">🔐 Yönetici Girişi</button></div>
+</div>
+
+
+<div id="loginModal" class="modal"><div class="box">
+<h2>🔐 Giriş</h2>
+<div class="muted">Bayi veya yönetici hesabınızla giriş yapın.</div>
+<div class="grid">
+<div class="field full"><label>E-POSTA</label><input id="loginEmail" type="email" autocomplete="username" placeholder="ornek@mail.com"></div>
+<div class="field full"><label>ŞİFRE</label><input id="loginPassword" type="password" autocomplete="current-password" placeholder="Şifreniz"></div>
+</div>
+<div class="formbuttons"><button type="button" id="loginCancel" class="gray">Vazgeç</button><button type="button" id="loginSave" class="red">Giriş Yap</button></div>
+<div id="loginStatus" class="notice" style="margin-top:10px;display:none"></div>
+</div></div>
+
+<div id="modal" class="modal"><div class="box">
+<h2 id="title">Yeni Ürün</h2><div class="muted">Ürün bilgilerini ekle veya değiştir.</div>
+<div class="grid">
+<div class="field full"><label>MODEL</label><input id="model" placeholder="Redmi Note 12"></div>
+<div class="field"><label>KATEGORİ</label><select id="category"><option>Ekranlar</option><option>Bataryalar</option><option>Kapaklar</option><option>Şarj Bordları</option><option>Diğer Ürünler</option></select></div>
+<div class="field"><label>ÜRÜN / AÇIKLAMA</label><input id="product" value="Ekran"></div>
+<div class="field"><label>KALİTE</label><select id="quality"></select></div>
+<div class="field"><label>ÜRÜN TÜRÜ</label><select id="type"></select></div>
+<div class="field"><label>BAYİ FİYATI ($)</label><input id="dealer" inputmode="decimal"></div>
+<div class="field"><label>MÜŞTERİ FİYATI (₺)</label><input id="customer" inputmode="decimal"></div>
+<div class="field"><label>STOK ADEDİ (YÖNETİCİ)</label><input id="stock" type="number" min="0" value="0"></div>
+<div class="field"><label>STOK DURUMU</label><select id="stockStatus">
+<option value="VAR">🟢 VAR</option>
+<option value="KARGO">🟠 KARGO BEKLENİYOR</option>
+<option value="KARGO_GUNU">🔵 KARGO GÜNÜ BEKLENİYOR</option>
+<option value="SIPARIS">🟣 SİPARİŞ LİSTESİNE EKLENDİ • KARGO GÜNÜ BEKLENİYOR</option>
+</select></div>
+</div>
+<div class="formbuttons"><button id="cancel" class="gray">Vazgeç</button><button id="save" class="red">Kaydet</button></div>
+</div></div>
+
+<div id="reviewModal" class="modal"><div class="box"><h2>⭐ Değerlendir</h2><div class="muted">Ürün deneyiminizi değerlendirin.</div>
+<div class="review-stars" id="stars"><span data-v="1">★</span><span data-v="2">★</span><span data-v="3">★</span><span data-v="4">★</span><span data-v="5">★</span></div>
+<div class="field"><label>KISA YORUM (İSTEĞE BAĞLI)</label><textarea id="reviewText" placeholder="Ürün hızlı geldi..."></textarea></div>
+<div class="formbuttons"><button id="reviewCancel" class="gray">Vazgeç</button><button id="reviewSave" class="red">Gönder</button></div>
+</div></div>
+
+<div id="infoModal" class="modal"><div class="box"><h2 id="infoTitle">Bilgi</h2><div id="infoBody"></div><div class="formbuttons"><button id="infoClose" class="dark">Kapat</button></div></div></div>
+
+<div id="orderModal" class="modal">
+  <div class="box">
+    <h2 style="margin:0 0 6px">🛵 Sipariş Ver</h2>
+    <div id="orderProductInfo" class="notice" style="margin-bottom:14px"></div>
+    <div class="grid">
+      <div class="field"><label>MARKA</label><input id="orderBrand" placeholder="Samsung"></div>
+      <div class="field"><label>MODEL</label><input id="orderModel" readonly></div>
+      <div class="field full"><label>ADET</label><input id="orderQty" type="number" min="1" value="1" inputmode="numeric"></div>
+      <div class="field full"><label>İSİM SOYİSİM</label><input id="orderName" autocomplete="name" placeholder="Adınız Soyadınız"></div>
+    </div>
+    <div id="orderCart" class="notice" style="margin-top:12px;display:none"></div>
+    <div class="formbuttons">
+      <button class="gray" id="orderCancel">Vazgeç</button>
+      <button class="dark" id="orderAddItem">＋ Ürünü Ekle</button>
+    </div>
+    <button class="red" id="orderSend" style="width:100%;margin-top:8px">🛵 SİPARİŞİ GÖNDER</button>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+/* SUPABASE: Bu iki alan proje bilgileri geldiğinde doldurulacak. */
+const SUPABASE_URL = "https://rxdklobqwjjpffmspgnt.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_6sKyD7kOmPid9qaKA87rsw_yXuCeR0k";
+const supabaseClient = (SUPABASE_URL && SUPABASE_ANON_KEY && window.supabase) ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+let cloudReady = false;
+const seed=[{"model": "Redmi Note 8", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 9", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 10 / 10S", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 11", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 12", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi 12C / Poco C55", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi 13C", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}, {"model": "Redmi Note 14 4G", "product": "Ekran", "quality": "", "dealer": "", "customer": "", "stock": 0, "type": ""}];
+
+async function loadCloudProducts(){
+  if(!supabaseClient) return false;
+
+  // Ürünleri rol kontrolünden bağımsız olarak yükle.
+  // Yönetici/bayi ayrımı ürünlerin görünmesini değil, yetkileri belirlemelidir.
+  let result = await supabaseClient.rpc(admin ? "get_admin_products" : "get_dealer_products");
+
+  if(result.error){
+    console.error("Supabase products:",result.error);
+    // SQL/RPC kurulumu tamamlanmamışsa mevcut yerel ürünleri silme.
+    cloudReady=false;
+    return false;
+  }
+
+  const data=result.data||[];
+  db=data.map(x=>{
+    const dealerPrice = x.dealer_price ?? x.dealer ?? x.bayi_fiyati ?? x.bayi_price ?? "";
+    const customerPrice = x.customer_price ?? x.customer ?? x.musteri_fiyati ?? x.musteri_price ?? "";
+    return {
+      id:x.id, model:x.model||"", product:x.product||"Ekran", category:x.category||"Ekranlar",
+      quality:x.quality||"", type:x.type||"",
+      dealer:dealerPrice==null?"":String(dealerPrice),
+      customer:customerPrice==null?"":String(customerPrice),
+      stock:Number(x.stock)||0, stockStatus:x.stock_status||"KARGO", color:x.color||""
+    };
+  });
+  localStorage.setItem("sener_v1",JSON.stringify(db));
+  cloudReady=true;
+  return true;
+}
+async function saveCloudProduct(x){
+  if(!supabaseClient || !admin) return false;
+  const args={
+    p_model:x.model,p_product:x.product||"Ekran",p_category:x.category||"Ekranlar",
+    p_quality:x.quality||"",p_type:x.type||"",
+    p_dealer_price:x.dealer===""?null:Number(x.dealer),
+    p_customer_price:x.customer===""?null:Number(x.customer),
+    p_stock:Math.max(0,Number(x.stock)||0),p_stock_status:x.stockStatus||"KARGO",
+    p_color:x.color||""
+  };
+  if(x.id) args.p_id=x.id;
+  const result=x.id
+    ? await supabaseClient.rpc("admin_update_product",{...args})
+    : await supabaseClient.rpc("admin_create_product",args);
+  if(result.error){console.error("Supabase product save:",result.error);return false}
+  if(!x.id && result.data) x.id=result.data;
+  return true;
+}
+async function changeCloudStock(id,delta){
+  if(!supabaseClient || !admin) return false;
+  const result=await supabaseClient.rpc("admin_change_stock",{p_id:id,p_delta:delta});
+  if(result.error){console.error("Supabase stock:",result.error);return false}
+  return !!result.data;
+}
+async function loadCloudSettings(){
+  if(!supabaseClient) return false;
+  const result=await supabaseClient.rpc("get_settings");
+  if(result.error || !result.data){
+    console.error("Supabase settings okunamadı:", result.error);
+    return false;
+  }
+
+  // Supabase boş dönerse daha önce bu tarayıcıda yönetici tarafından
+  // oluşturulmuş seçenekleri silme. Dolu olan bulut ayarlarını kullan.
+  const cloudQualities=Array.isArray(result.data.qualities)?result.data.qualities:[];
+  const cloudTypes=Array.isArray(result.data.types)?result.data.types:[];
+
+  if(cloudQualities.length || cloudTypes.length){
+    settings={
+      qualities:cloudQualities,
+      types:cloudTypes
+    };
+    saveSettings();
+  }else{
+    ensureDefaultOptions();
+  }
+  return true;
+}
+async function saveCloudSettings(){
+  if(!supabaseClient || !admin) return false;
+  const result=await supabaseClient.rpc("admin_save_settings",{p_qualities:settings.qualities,p_types:settings.types});
+  if(result.error){
+    console.error("Supabase settings:",result.error);
+    // Yerel kayıt zaten saveSettings() ile korunuyor.
+    return false;
+  }
+  return true;
+}
+async function loadCloudReviews(){
+  if(!supabaseClient || !admin) return [];
+  const result=await supabaseClient.from("reviews").select("id,rating,text,created_at").order("created_at",{ascending:false});
+  if(result.error){console.error("Supabase reviews:",result.error);return []}
+  return (result.data||[]).map(r=>({rating:r.rating,text:r.text,date:new Date(r.created_at).toLocaleString("tr-TR")}));
+}
+async function saveCloudReview(rating,textValue){
+  if(!supabaseClient) return false;
+  const authResult=await Promise.race([supabaseClient.auth.getUser(),timeout]);
+  const {data:{user}}=authResult;
+  if(!user){alert("Değerlendirme göndermek için giriş yapmalısın.");return false}
+  const result=await supabaseClient.from("reviews").insert({user_id:user.id,rating,text:textValue});
+  if(result.error){console.error("Supabase review:",result.error);alert("Değerlendirme kaydedilemedi.");return false}
+  return true;
+}
+
+let db=JSON.parse(localStorage.getItem("sener_v1")||"null")||seed;
+let mode="dealer",edit=-1,category="all",admin=false,selectedRating=0;
+const DEFAULT_QUALITIES=[];
+const DEFAULT_TYPES=[];
+let settings=JSON.parse(localStorage.getItem("sener_settings_v1")||"null")||{qualities:[],types:[]};
+
+function ensureDefaultOptions(){
+  if(!Array.isArray(settings.qualities)) settings.qualities=[];
+  if(!Array.isArray(settings.types)) settings.types=[];
+  saveSettings();
+}
+
+const $=id=>document.getElementById(id);
+const esc=x=>String(x??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm=x=>String(x??"").toLocaleLowerCase("tr-TR");
+function saveDB(){localStorage.setItem("sener_v1",JSON.stringify(db))}
+function saveSettings(){localStorage.setItem("sener_settings_v1",JSON.stringify(settings))}
+function saveReviews(){localStorage.setItem("sener_reviews_v1",JSON.stringify(reviews))}
+function categoryOf(x){if(x.category)return x.category;let p=norm(x.product);if(p.includes("batarya"))return "Bataryalar";if(p.includes("kapak"))return "Kapaklar";if(p.includes("şarj")||p.includes("bord"))return "Şarj Bordları";return "Ekranlar"}
+function statusOf(x){if(x.stockStatus==="VAR")return "VAR";if(x.stockStatus==="KARGO_GUNU")return "KARGO_GUNU";if(x.stockStatus==="SIPARIS")return "SIPARIS";if(x.stockStatus==="KARGO")return "KARGO";return Number(x.stock)>0?"VAR":"KARGO"}
+function statusTextOf(st){if(st==="VAR")return "🟢 VAR";if(st==="KARGO_GUNU")return "🔵 KARGO GÜNÜ BEKLENİYOR";if(st==="SIPARIS")return "🟣 SİPARİŞ LİSTESİNE EKLENDİ • KARGO GÜNÜ BEKLENİYOR";return "🟠 KARGO BEKLENİYOR"}
+
+function render(){
+let q=norm($("search").value.trim());
+let list=db.filter(x=>{let hay=[x.model,x.product,x.quality,x.type,x.color,x.category].map(norm).join(" ");return (category==="all"||categoryOf(x)===category)&&(!q||hay.includes(q))});
+$("listTitle").textContent=category==="all"?"Ürünler":category;
+$("list").innerHTML=list.length?list.map(x=>{
+let i=db.indexOf(x),p=mode==="dealer"?"$ "+esc(x.dealer||"—"):(admin?"₺ "+esc(x.customer||"—"):"$ "+esc(x.dealer||"—")),st=statusOf(x),stText=statusTextOf(st),stClass=st==="VAR"?"ok":st==="KARGO_GUNU"?"ship":st==="SIPARIS"?"order":"wait";
+return `<div class="card clickable" data-card="${i}"><div class="row"><div><div class="model">${esc(x.model)}</div><div class="muted">${esc(x.product||categoryOf(x))}</div></div><div class="price">${p}</div></div>
+<div class="tags"><span class="tag">Kalite: ${esc(x.quality||"—")}</span><span class="tag">Tür: ${esc(x.type||"—")}</span><span class="tag ${st==="VAR"?"stock-ok":"stock-wait"}">${stText}</span></div>
+<div class="detail"><div class="detail-card">
+<div class="detail-top"><div><div class="detail-kicker">Ürün Ayrıntıları</div><div class="detail-model">${esc(x.model)}</div><div class="detail-product">${esc(x.product||categoryOf(x))}</div></div><div class="detail-status ${stClass}">${stText}</div></div>
+<div class="detail-grid">
+<div class="detail-item"><div class="detail-label">Model</div><div class="detail-value">${esc(x.model)}</div></div>
+<div class="detail-item"><div class="detail-label">Ürün</div><div class="detail-value">${esc(x.product||categoryOf(x))}</div></div>
+<div class="detail-item"><div class="detail-label">Kalite</div><div class="detail-value">${esc(x.quality||"—")}</div></div>
+<div class="detail-item"><div class="detail-label">Ürün Türü</div><div class="detail-value">${esc(x.type||"—")}</div></div>
+${x.color?`<div class="detail-item"><div class="detail-label">Renk</div><div class="detail-value">${esc(x.color)}</div></div>`:""}
+<div class="detail-item"><div class="detail-label">Stok Durumu</div><div class="detail-value">${stText}</div></div>
+</div>
+<div class="detail-price"><div class="detail-price-label">${mode==="dealer"?"BAYİ FİYATI":"MÜŞTERİ FİYATI"}</div><div class="detail-price-value">${p}</div><div class="detail-price-note">Güncel fiyat • Anlık olarak güncellenmektedir</div></div>
+<button class="order-product-btn" type="button" data-action="order" data-i="${i}">🛵 SİPARİŞ VER</button><div class="detail-close-hint">Ürüne tekrar dokunarak ayrıntıları kapatabilirsiniz</div>
+</div>
+${admin?`<div class="actions"><button class="gray" data-a="minus" data-i="${i}">− Stok</button><button class="dark" data-a="plus" data-i="${i}">＋ Stok</button><button class="gray" data-a="edit" data-i="${i}">✎ Düzenle</button></div>`:""}</div></div>`
+}).join(""):"<p style='text-align:center;color:#888;padding:25px'>Ürün bulunamadı.</p>";
+}
+function fillOptions(){
+  const qualities=Array.isArray(settings.qualities)?settings.qualities:[];
+  const types=Array.isArray(settings.types)?settings.types:[];
+  $("quality").innerHTML='<option value="">Seç</option>'+qualities.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+  $("type").innerHTML='<option value="">Seç</option>'+types.map(x=>`<option value="${esc(x)}">${esc(x)}</option>`).join("");
+}
+function openForm(i=-1){
+if(!admin){alert("Bu işlem yalnızca yönetici modunda kullanılabilir.");return} edit=i;
+let x=i<0?{model:"",product:"Ekran",quality:"",dealer:"",customer:"",stock:0,type:"",category:"Ekranlar",stockStatus:"KARGO"}:db[i];
+$("title").textContent=i<0?"Yeni Ürün":"Ürünü Düzenle";$("model").value=x.model||"";$("product").value=x.product||"Ekran";$("quality").value=x.quality||"";$("type").value=x.type||"";$("dealer").value=x.dealer||"";$("customer").value=x.customer||"";$("stock").value=x.stock||0;$("category").value=categoryOf(x);$("stockStatus").value=statusOf(x);$("modal").classList.add("show")
+}
+function closeForm(){$("modal").classList.remove("show");edit=-1}
+function setMode(m){
+  if(m==="customer" && !admin){m="dealer";return}
+  mode=m;
+  $("dealerTab").className=m==="dealer"?"dark":"gray";
+  $("customerTab").className=m==="customer"?"dark":"gray";
+  render()
+}
+$("new1").onclick=()=>openForm();$("new2").onclick=()=>openForm();
+$("adminProductAdd").onclick=()=>openForm();
+$("adminStockAdd").onclick=()=>{
+  if(!admin){alert("Bu işlem yalnızca yönetici modunda kullanılabilir.");return}
+  const first=db.findIndex(x=>x.id!=null);
+  if(first<0){openForm();return}
+  openForm(first);
+  setTimeout(()=>{$("stock").focus();$("stock").select()},50);
+};
+$("adminEditFirst").onclick=()=>{
+  if(!admin){alert("Bu işlem yalnızca yönetici modunda kullanılabilir.");return}
+  const first=db.findIndex(x=>x.id!=null);
+  if(first<0){openForm();return}
+  openForm(first);
+};
+$("cancel").onclick=closeForm;$("dealerTab").onclick=()=>setMode("dealer");$("customerTab").onclick=()=>setMode("customer");$("search").oninput=render;
+document.querySelectorAll(".cat").forEach(b=>b.onclick=()=>{category=b.dataset.cat;document.querySelectorAll(".cat").forEach(x=>x.classList.remove("active"));b.classList.add("active");render()});
+$("modal").onclick=e=>{if(e.target===$("modal"))closeForm()};
+$("save").onclick=async()=>{
+  let model=$("model").value.trim();
+  if(!model){alert("Model adını yazmalısın.");return}
+  let x=edit<0
+    ? {model,product:$("product").value.trim()||"Ekran",category:$("category").value,quality:$("quality").value,type:$("type").value,dealer:$("dealer").value.trim(),customer:$("customer").value.trim(),stock:Math.max(0,Number($("stock").value)||0),stockStatus:$("stockStatus").value}
+    : db[edit];
+  if(edit>=0) Object.assign(x,{model,product:$("product").value.trim()||"Ekran",category:$("category").value,quality:$("quality").value,type:$("type").value,dealer:$("dealer").value.trim(),customer:$("customer").value.trim(),stock:Math.max(0,Number($("stock").value)||0),stockStatus:$("stockStatus").value});
+  if(supabaseClient){
+    const ok=await saveCloudProduct(x);
+    if(!ok){alert("Supabase kaydı yapılamadı. Değişiklik kaydedilmedi.");return}
+  }
+  if(edit<0) db.unshift(x);
+  saveDB();closeForm();render()
+};
+
+let pendingOrderIndex=-1;
+let orderCart=[];
+let ordersChannel=null;
+function detectBrand(model){
+  const m=String(model||"").trim();
+  if(/^iphone\b/i.test(m)) return "iPhone";
+  if(/^samsung\b/i.test(m)) return "Samsung";
+  if(/^redmi\b/i.test(m)) return "Redmi";
+  if(/^poco\b/i.test(m)) return "POCO";
+  if(/^xiaomi\b/i.test(m)) return "Xiaomi";
+  if(/^huawei\b/i.test(m)) return "Huawei";
+  if(/^honor\b/i.test(m)) return "Honor";
+  if(/^oppo\b/i.test(m)) return "OPPO";
+  if(/^vivo\b/i.test(m)) return "vivo";
+  if(/^realme\b/i.test(m)) return "realme";
+  if(/^reeder\b/i.test(m)) return "Reeder";
+  return "";
+}
+function renderOrderCart(){
+  const box=$("orderCart");
+  if(!orderCart.length){box.style.display="none";box.innerHTML="";return}
+  box.style.display="block";
+  box.innerHTML="<b>📦 Sipariş Listesi</b>"+orderCart.map((o,i)=>`<div style="padding:8px 0;border-top:1px solid #eee"><b>${esc(o.brand)}</b> — ${esc(o.model)} — <b>${o.quantity} adet</b> <button type="button" class="gray" data-remove-order="${i}" style="float:right;padding:5px 8px">Sil</button></div>`).join("");
+}
+function resetOrderForm(){pendingOrderIndex=-1;orderCart=[];$("orderBrand").value="";$("orderModel").value="";$("orderQty").value=1;$("orderName").value="";renderOrderCart()}
+function openOrder(i){
+  const x=db[i]; if(!x)return;
+  pendingOrderIndex=i;
+  $("orderProductInfo").innerHTML=`<b>${esc(x.model)}</b><br>${esc(x.product||categoryOf(x))} • ${esc(x.quality||"—")} • ${esc(x.type||"—")}`;
+  $("orderBrand").value=detectBrand(x.model); $("orderModel").value=x.model||""; $("orderQty").value=1;
+  orderCart=[]; renderOrderCart(); $("orderModal").classList.add("show"); setTimeout(()=>$("orderQty").focus(),50);
+}
+$("orderCancel").onclick=()=>{$("orderModal").classList.remove("show");resetOrderForm()};
+$("orderModal").onclick=e=>{if(e.target===$("orderModal")){$("orderModal").classList.remove("show");resetOrderForm()}};
+$("orderAddItem").onclick=()=>{
+  const brand=$("orderBrand").value.trim(), model=$("orderModel").value.trim(), quantity=Math.max(1,Number($("orderQty").value)||1);
+  if(!brand){alert("Lütfen marka gir.");$("orderBrand").focus();return}
+  if(!model){alert("Model bulunamadı.");return}
+  const x=pendingOrderIndex>=0?db[pendingOrderIndex]:null;
+  orderCart.push({productId:x?.id||null,brand,model,quantity,product:x?.product||"Ekran",quality:x?.quality||"",type:x?.type||"",color:x?.color||"",dealerPrice:x?.dealer||""});
+  renderOrderCart(); $("orderBrand").value="";$("orderModel").value="";$("orderQty").value=1;$("orderBrand").focus();
+};
+$("orderCart").onclick=e=>{const b=e.target.closest("[data-remove-order]");if(!b)return;orderCart.splice(Number(b.dataset.removeOrder),1);renderOrderCart()};
+async function saveOrderToSupabase(name,items){
+  if(!supabaseClient) return {ok:false,error:{message:"Supabase bağlantısı yok."}};
+
+  // ANA SİPARİŞ: orders tablosuna SADECE bu iki alan gönderilir.
+  // Marka/model/adet kesinlikle orders tablosuna gönderilmez.
+  const main=await supabaseClient
+    .from("orders")
+    .insert([{customer_name:name,status:"Onay Bekliyor"}])
+    .select("id")
+    .single();
+
+  if(main.error) return {ok:false,error:main.error};
+  const orderId=main.data?.id;
+  if(!orderId) return {ok:false,error:{message:"Sipariş ID alınamadı."}};
+
+  // ÜRÜN SATIRLARI: marka/model/adet yalnızca order_items tablosuna gider.
+  const rows=items.map(x=>({
+    order_id:orderId,
+    brand:x.brand,
+    model:x.model,
+    quantity:x.quantity
+  }));
+
+  const detail=await supabaseClient.from("order_items").insert(rows);
+  if(detail.error) return {ok:false,error:detail.error};
+  return {ok:true};
+}
+$("orderSend").onclick=async()=>{
+  const name=$("orderName").value.trim();
+  if(!name){alert("Lütfen isim soyisim gir.");$("orderName").focus();return}
+  if(!orderCart.length){alert("Lütfen en az bir ürün ekle.");return}
+  const btn=$("orderSend");btn.disabled=true;btn.textContent="Gönderiliyor...";
+  try{
+    const r=await saveOrderToSupabase(name,orderCart);
+    if(!r.ok){alert("Sipariş Supabase'e kaydedilemedi.\n\n"+(r.error?.message||"Bilinmeyen hata"));return}
+    const summary=orderCart.map(x=>`${x.brand} — ${x.model} — ${x.quantity} adet`).join("\n");
+    $("orderModal").classList.remove("show");resetOrderForm();alert(`Siparişiniz alındı.\n\n${summary}\n\nİsim Soyisim: ${name}`);
+  }finally{btn.disabled=false;btn.textContent="🛵 SİPARİŞİ GÖNDER"}
+};
+async function loadAdminOrders(){
+  if(!admin||!supabaseClient)return;
+  const list=$("ordersList");list.innerHTML="<div class='notice'>Siparişler yükleniyor...</div>";
+  const r=await supabaseClient.from("orders").select("id,customer_name,status,created_at").order("created_at",{ascending:false});
+  if(r.error){list.innerHTML=`<div class="notice">Siparişler okunamadı.<br>${esc(r.error.message)}</div>`;return}
+  const rows=r.data||[];
+  if(!rows.length){list.innerHTML="<div class='notice'>Henüz sipariş yok.</div>";return}
+  const ids=rows.map(x=>x.id).filter(Boolean);
+  let items=[];
+  if(ids.length){
+    const ir=await supabaseClient.from("order_items").select("order_id,brand,model,quantity").in("order_id",ids);
+    if(!ir.error)items=ir.data||[];
+  }
+  const groups=rows.map(o=>[o]);
+  list.innerHTML=groups.map(group=>{
+    const first=group[0];
+    const groupIds=new Set(group.map(x=>x.id));
+    const its=items.filter(x=>groupIds.has(x.order_id));
+    const date=first.created_at?new Date(first.created_at).toLocaleString("tr-TR"):"";
+    return `<div style="border:1px solid #e7e7e7;border-radius:15px;padding:13px;margin-top:9px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:center"><div><b>👤 ${esc(first.customer_name||"—")}</b><div class="muted">${esc(date)}</div></div><select data-order-status="${esc(first.id)}" style="padding:8px;border:1px solid #ddd;border-radius:9px;font-weight:800"><option ${first.status==="Onay Bekliyor"?"selected":""}>Onay Bekliyor</option><option ${first.status==="Hazırlanıyor"?"selected":""}>Hazırlanıyor</option><option ${first.status==="Kargoya Verildi"?"selected":""}>Kargoya Verildi</option><option ${first.status==="Tamamlandı"?"selected":""}>Tamamlandı</option><option ${first.status==="İptal Edildi"?"selected":""}>İptal Edildi</option></select></div>${its.map(i=>`<div style="padding:7px 0;border-top:1px solid #eee"><b>${esc(i.brand||"")}</b> — ${esc(i.model||"")} — <b>${Number(i.quantity)||0} adet</b></div>`).join("")}</div>`;
+  }).join("");
+}
+$("ordersRefresh").onclick=loadAdminOrders;
+$("ordersList").onchange=async e=>{const s=e.target.closest("[data-order-status]");if(!s)return;const r=await supabaseClient.from("orders").update({status:s.value}).eq("id",s.dataset.orderStatus);if(r.error){alert("Sipariş durumu güncellenemedi.\n\n"+r.error.message);await loadAdminOrders()}};
+async function subscribeAdminOrders(){
+  if(!supabaseClient||!admin)return;
+  if(ordersChannel)await supabaseClient.removeChannel(ordersChannel);
+  ordersChannel=supabaseClient.channel("sener-orders-live").on("postgres_changes",{event:"*",schema:"public",table:"orders"},p=>{if(admin){loadAdminOrders();if(p.eventType==="INSERT")alert("🛵 Yeni sipariş geldi!")}}).on("postgres_changes",{event:"*",schema:"public",table:"order_items"},()=>{if(admin)loadAdminOrders()}).subscribe();
+}
+
+$("list").onclick=async e=>{
+  const orderBtn=e.target.closest(".order-product-btn");
+  if(orderBtn){
+    e.preventDefault();
+    e.stopPropagation();
+    openOrder(Number(orderBtn.dataset.i));
+    return;
+  }
+  let card=e.target.closest(".card");if(!card)return;
+  let b=e.target.closest("button[data-a]");
+  if(b){
+    let i=+b.dataset.i,a=b.dataset.a;
+    if(a==="edit"){openForm(i);return}
+    if(a==="plus")db[i].stock=(+db[i].stock||0)+1;
+    if(a==="minus")db[i].stock=Math.max(0,(+db[i].stock||0)-1);
+    db[i].stockStatus=db[i].stock>0?"VAR":db[i].stockStatus;
+    if(supabaseClient && !(await changeCloudStock(db[i].id,a==="plus"?1:-1))){alert("Stok Supabase'e kaydedilemedi.");return}
+    saveDB();await loadCloudProducts();render();return
+  }
+  card.classList.toggle("open")
+};
+$("reviewOpen").onclick=()=>{$("reviewModal").classList.add("show");selectedRating=0;updateStars();$("reviewText").value=""};$("reviewCancel").onclick=()=>$("reviewModal").classList.remove("show");
+$("stars").onclick=e=>{let s=e.target.closest("span");if(!s)return;selectedRating=+s.dataset.v;updateStars()};function updateStars(){document.querySelectorAll("#stars span").forEach(s=>s.classList.toggle("on",+s.dataset.v<=selectedRating))}
+$("reviewSave").onclick=async()=>{
+  if(!selectedRating){alert("Lütfen yıldız seç.");return}
+  const reviewTextValue=$("reviewText").value.trim();
+  if(supabaseClient){
+    const ok=await saveCloudReview(selectedRating,reviewTextValue);
+    if(!ok)return;
+  }else{
+    reviews.unshift({rating:selectedRating,text:reviewTextValue,date:new Date().toLocaleString("tr-TR")});
+    saveReviews();
+  }
+  $("reviewModal").classList.remove("show");alert("Değerlendirmeniz kaydedildi. Teşekkür ederiz!")
+};
+$("adminReviews").onclick=async()=>{
+  if(!admin)return;
+  reviews=await loadCloudReviews();
+  $("infoTitle").textContent="⭐ Değerlendirmeler";
+  $("infoBody").innerHTML=reviews.length?reviews.map(r=>`<div class="review-item"><div>${"★".repeat(r.rating)}${"☆".repeat(5-r.rating)}</div><div>${esc(r.text||"Yorum yok")}</div><div class="muted">${esc(r.date)}</div></div>`).join(""):"<div class='notice'>Henüz değerlendirme yok.</div>";
+  $("infoModal").classList.add("show")
+};
+$("adminOptions").onclick=()=>{
+let q=settings.qualities.map(x=>`<div class="option-row"><input value="${esc(x)}" data-q><button class="gray" data-del-q="${esc(x)}">Sil</button></div>`).join("");
+let t=settings.types.map(x=>`<div class="option-row"><input value="${esc(x)}" data-t><button class="gray" data-del-t="${esc(x)}">Sil</button></div>`).join("");
+$("infoTitle").textContent="⚙ Kalite / Tür Yönetimi";$("infoBody").innerHTML=`<h3>Kaliteler</h3>${q}<div class="option-row"><input id="newQuality" placeholder="Yeni Kalite"><button class="red" id="addQuality">＋ Ekle</button></div><h3 style="margin-top:20px">Türler</h3>${t}<div class="option-row"><input id="newType" placeholder="Yeni Tür"><button class="red" id="addType">＋ Ekle</button></div>`;$("infoModal").classList.add("show");
+$("addQuality").onclick=async()=>{let v=$("newQuality").value.trim();if(v&&!settings.qualities.includes(v))settings.qualities.push(v);saveSettings();await saveCloudSettings();fillOptions();$("adminOptions").click()};
+$("addType").onclick=async()=>{let v=$("newType").value.trim();if(v&&!settings.types.includes(v))settings.types.push(v);saveSettings();await saveCloudSettings();fillOptions();$("adminOptions").click()};
+document.querySelectorAll("[data-del-q]").forEach(b=>b.onclick=async()=>{settings.qualities=settings.qualities.filter(x=>x!==b.dataset.delQ);saveSettings();await saveCloudSettings();fillOptions();$("adminOptions").click()});
+document.querySelectorAll("[data-del-t]").forEach(b=>b.onclick=async()=>{settings.types=settings.types.filter(x=>x!==b.dataset.delT);saveSettings();await saveCloudSettings();fillOptions();$("adminOptions").click()});
+};
+$("infoClose").onclick=()=>$("infoModal").classList.remove("show");$("infoModal").onclick=e=>{if(e.target===$("infoModal"))$("infoModal").classList.remove("show")};
+
+async function applyAuthState(){
+  admin=false;
+  if(!supabaseClient){$("app").classList.remove("admin-mode");$("adminToggle").textContent="🔐 Yönetici Girişi";fillOptions();render();return}
+  try{
+    const {data:{user}}=await Promise.race([
+      supabaseClient.auth.getUser(),
+      new Promise(resolve=>setTimeout(()=>resolve({data:{user:null}}),4000))
+    ]);
+    if(user){
+      const result=await Promise.race([
+        supabaseClient.from("profiles").select("role").eq("id",user.id).maybeSingle(),
+        new Promise(resolve=>setTimeout(()=>resolve({data:null,error:{message:"Profil zaman aşımı"}}),3000))
+      ]);
+      const profileRole=String(result.data?.role||"").trim().toLocaleLowerCase("tr-TR").replace(/\s+/g,"").replace(/ı/g,"i").replace(/İ/g,"i");
+      const metaRole=String(user.user_metadata?.role||user.app_metadata?.role||"").trim().toLocaleLowerCase("tr-TR").replace(/\s+/g,"").replace(/ı/g,"i").replace(/İ/g,"i");
+      const allowed=["admin","administrator","yonetici","yönetici","superadmin"];
+      admin=allowed.includes(profileRole)||allowed.includes(metaRole);
+    }
+  }catch(e){console.error("Auth:",e)}
+  $("app").classList.toggle("admin-mode",admin);$("adminToggle").textContent=admin?"🚪 Yönetici Çıkışı":"🔐 Yönetici Girişi";
+  $("ordersPanel").style.display=admin?"block":"none";
+  mode="dealer";fillOptions();render();
+  if(admin){await loadAdminOrders();await subscribeAdminOrders()}
+}
+$("adminOrders").onclick=async()=>{if(!admin)return;$("ordersPanel").style.display="block";await loadAdminOrders();$("ordersPanel").scrollIntoView({behavior:"smooth",block:"start"})};
+
+$("adminToggle").onclick=async()=>{
+  if(admin){
+    await supabaseClient.auth.signOut();
+    admin=false; mode="dealer"; $("app").classList.remove("admin-mode");
+    $("adminToggle").textContent="🔐 Yönetici Girişi";
+    await loadCloudProducts(); render(); return;
+  }
+  if(!supabaseClient){alert("Supabase bağlantısı hazır değil.");return}
+  $("loginModal").classList.add("show"); setTimeout(()=>$("loginEmail").focus(),50);
+};
+$("loginCancel").onclick=()=>$("loginModal").classList.remove("show");
+$("loginModal").onclick=e=>{if(e.target===$("loginModal"))$("loginModal").classList.remove("show")};
+$("loginSave").onclick=async()=>{
+  const email=$("loginEmail").value.trim(), password=$("loginPassword").value;
+  if(!email||!password){alert("E-posta ve şifre gerekli.");return}
+  $("loginStatus").style.display="block"; $("loginStatus").textContent="Giriş yapılıyor...";
+  const result=await supabaseClient.auth.signInWithPassword({email,password});
+  if(result.error){$("loginStatus").textContent="Giriş başarısız: "+result.error.message;return}
+  $("loginModal").classList.remove("show"); $("loginStatus").style.display="none";
+  await applyAuthState();
+  if(admin){
+    $("adminToggle").textContent="🚪 Yönetici Çıkışı";
+  }
+};
+supabaseClient?.auth.onAuthStateChange(()=>{setTimeout(()=>applyAuthState(),0)});
+
+ensureDefaultOptions();fillOptions();setMode("dealer");render();setTimeout(()=>applyAuthState().catch(e=>console.error("Başlangıç auth:",e)),0);
+</script>
+
+</body></html>
